@@ -45,7 +45,7 @@ namespace LibraryMS.Controllers
         // PUT: api/Lending/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLending(int id, Lending lending)
+        public async Task<IActionResult> PutLending(Guid id, Lending lending)
         {
             if (id != lending.LendingId)
             {
@@ -100,7 +100,7 @@ namespace LibraryMS.Controllers
             return NoContent();
         }
 
-        private bool LendingExists(int id)
+        private bool LendingExists(Guid id)
         {
             return _context.Lending.Any(e => e.LendingId == id);
         }

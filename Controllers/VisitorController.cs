@@ -45,7 +45,7 @@ namespace LibraryMS.Controllers
         // PUT: api/Visitor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVisitor(int id, Visitor visitor)
+        public async Task<IActionResult> PutVisitor(Guid id, Visitor visitor)
         {
             if (id != visitor.VisitorId)
             {
@@ -100,7 +100,7 @@ namespace LibraryMS.Controllers
             return NoContent();
         }
 
-        private bool VisitorExists(int id)
+        private bool VisitorExists(Guid id)
         {
             return _context.Visitor.Any(e => e.VisitorId == id);
         }

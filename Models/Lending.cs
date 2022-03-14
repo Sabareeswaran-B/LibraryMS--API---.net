@@ -4,10 +4,10 @@ namespace LibraryMS.Model
 {
     public class Lending
     {
-        public int LendingId { get; set; }
-        public int VisitorId { get; set; }
-        public int BookId { get; set; }
-        public int EmployeeId { get; set; }
+        public Guid LendingId { get; set; }
+        public Guid VisitorId { get; set; }
+        public Guid BookId { get; set; }
+        public Guid EmployeeId { get; set; }
         public DateTime LendedOn { get; set; }
         public int Lendinglimit { get; set; }
 

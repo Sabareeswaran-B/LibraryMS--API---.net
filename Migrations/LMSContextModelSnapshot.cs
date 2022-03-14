@@ -23,11 +23,9 @@ namespace LibraryMS.Migrations
 
             modelBuilder.Entity("LibraryMS.Model.Author", b =>
                 {
-                    b.Property<int>("AuthorId")
+                    b.Property<Guid>("AuthorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Active")
                         .HasColumnType("nvarchar(max)");
@@ -48,17 +46,15 @@ namespace LibraryMS.Migrations
 
             modelBuilder.Entity("LibraryMS.Model.Book", b =>
                 {
-                    b.Property<int>("BookId")
+                    b.Property<Guid>("BookId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Active")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BookName")
                         .HasColumnType("nvarchar(max)");
@@ -84,11 +80,9 @@ namespace LibraryMS.Migrations
 
             modelBuilder.Entity("LibraryMS.Model.Employee", b =>
                 {
-                    b.Property<int>("EmployeeId")
+                    b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Active")
                         .HasColumnType("nvarchar(max)");
@@ -121,20 +115,18 @@ namespace LibraryMS.Migrations
 
             modelBuilder.Entity("LibraryMS.Model.Lending", b =>
                 {
-                    b.Property<int>("LendingId")
+                    b.Property<Guid>("LendingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LendingId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Active")
                         .HasColumnType("int");
 
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("LendedOn")
                         .HasColumnType("datetime2");
@@ -142,8 +134,8 @@ namespace LibraryMS.Migrations
                     b.Property<int>("Lendinglimit")
                         .HasColumnType("int");
 
-                    b.Property<int>("VisitorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("VisitorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LendingId");
 
@@ -158,11 +150,9 @@ namespace LibraryMS.Migrations
 
             modelBuilder.Entity("LibraryMS.Model.Visitor", b =>
                 {
-                    b.Property<int>("VisitorId")
+                    b.Property<Guid>("VisitorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VisitorId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Active")
                         .HasColumnType("nvarchar(max)");

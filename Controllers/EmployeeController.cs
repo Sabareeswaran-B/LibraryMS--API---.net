@@ -45,7 +45,7 @@ namespace LibraryMS.Controllers
         // PUT: api/Employee/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutEmployee(Guid id, Employee employee)
         {
             if (id != employee.EmployeeId)
             {
@@ -105,7 +105,7 @@ namespace LibraryMS.Controllers
             return NoContent();
         }
 
-        private bool EmployeeExists(int id)
+        private bool EmployeeExists(Guid id)
         {
             return _context.Employee.Any(e => e.EmployeeId == id);
         }

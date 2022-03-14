@@ -45,7 +45,7 @@ namespace LibraryMS.Controllers
         // PUT: api/Author/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
+        public async Task<IActionResult> PutAuthor(Guid id, Author author)
         {
             if (id != author.AuthorId)
             {
@@ -100,7 +100,7 @@ namespace LibraryMS.Controllers
             return NoContent();
         }
 
-        private bool AuthorExists(int id)
+        private bool AuthorExists(Guid id)
         {
             return _context.Author.Any(e => e.AuthorId == id);
         }

@@ -4,7 +4,7 @@ namespace LibraryMS.Model
 {
     public class Author
     {
-        public int AuthorId { get; set; }
+        public Guid AuthorId { get; set; }
         public string? AuthorName { get; set; }
         public string? AuthorAge { get; set; }
         public string? PrimaryLanguage { get; set; }

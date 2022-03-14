@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LibraryMS.Migrations
 {
-    public partial class InitialMigrations : Migration
+    public partial class initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,12 +13,11 @@ namespace LibraryMS.Migrations
                 name: "Author",
                 columns: table => new
                 {
-                    AuthorId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AuthorAge = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrimaryLanguage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "true")
+                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,16 +28,15 @@ namespace LibraryMS.Migrations
                 name: "Employee",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeRole = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "clerk"),
+                    EmployeeRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeAge = table.Column<int>(type: "int", nullable: false),
                     EmployeeSalary = table.Column<int>(type: "int", nullable: false),
                     EmployeeEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeePhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "true")
+                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,8 +47,7 @@ namespace LibraryMS.Migrations
                 name: "Visitor",
                 columns: table => new
                 {
-                    VisitorId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VisitorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VisitorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VisitorAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VisitorAge = table.Column<int>(type: "int", nullable: false),
@@ -58,7 +55,7 @@ namespace LibraryMS.Migrations
                     VisitorPhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsEmployee = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAuthor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "true")
+                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,15 +66,14 @@ namespace LibraryMS.Migrations
                 name: "Book",
                 columns: table => new
                 {
-                    BookId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReleasedYear = table.Column<int>(type: "int", nullable: false),
                     Edition = table.Column<int>(type: "int", nullable: false),
                     CopiesAvailable = table.Column<int>(type: "int", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AuthorId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "true")
+                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,14 +90,13 @@ namespace LibraryMS.Migrations
                 name: "Lending",
                 columns: table => new
                 {
-                    LendingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VisitorId = table.Column<int>(type: "int", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    LendingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VisitorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LendedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Lendinglimit = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<int>(type: "int", nullable: false, defaultValue: "true")
+                    Active = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

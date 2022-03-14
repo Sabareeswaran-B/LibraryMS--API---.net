@@ -46,7 +46,7 @@ public class JwtHelper
             );
 
             var jwtToken = (JwtSecurityToken)validateToken;
-            var userID = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id")!.Value);
+            var userID = Guid.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id")!.Value);
 
             context.Items["User"] = userServices.GetById(userID);
         }

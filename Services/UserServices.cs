@@ -12,7 +12,7 @@ public interface IUserServices
 {
     AuthResponse Authenticate(Employee model);
     IEnumerable<Employee> GetAll();
-    Employee GetById(int Id);
+    Employee GetById(Guid Id);
 }
 
 public class UserServices : IUserServices
@@ -38,7 +38,7 @@ public class UserServices : IUserServices
         return _context.Employee.ToList();
     }
 
-    public Employee GetById(int Id)
+    public Employee GetById(Guid Id)
     {
         return _context.Employee.FirstOrDefault(x => x.EmployeeId == Id)!;
     }

@@ -4,7 +4,7 @@ namespace LibraryMS.Model
 {
     public class Visitor
     {
-        public int VisitorId { get; set; }
+        public Guid VisitorId { get; set; }
         public string? VisitorName { get; set; }
         public string? VisitorAddress { get; set; }
         public int VisitorAge { get; set; }
