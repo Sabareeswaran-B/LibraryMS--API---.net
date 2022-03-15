@@ -1,16 +1,14 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
+using LibraryMS.Helpers.RBA;
+using LibraryMS.Entities;
 
 namespace LibraryMS.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize(Role.Admin,Role.Clerk)]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class LendingController : ControllerBase
     {
@@ -79,6 +77,8 @@ namespace LibraryMS.Controllers
         public async Task<ActionResult<Lending>> PostLending(Lending lending)
         {
             _context.Lending.Add(lending);
+            Book book = _context.Book.Where(data => data.BookId == lending.BookId).FirstOrDefault();
+            book.CopiesAvailable -= 1;
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetLending", new { id = lending.LendingId }, lending);
@@ -93,10 +93,10 @@ namespace LibraryMS.Controllers
             {
                 return NotFound();
             }
-
+            Book book = _context.Book.Where(data => data.BookId == lending.BookId).FirstOrDefault();
+            book.CopiesAvailable += 1;
             _context.Lending.Remove(lending);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 

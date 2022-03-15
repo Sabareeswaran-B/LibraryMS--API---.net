@@ -1,16 +1,13 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
+using LibraryMS.Helpers.RBA;
+using LibraryMS.Entities;
 
 namespace LibraryMS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class VisitorController : ControllerBase
     {
@@ -44,6 +41,7 @@ namespace LibraryMS.Controllers
 
         // PUT: api/Visitor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Role.Admin,Role.Clerk)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVisitor(Guid id, Visitor visitor)
         {
@@ -75,6 +73,7 @@ namespace LibraryMS.Controllers
 
         // POST: api/Visitor
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Role.Admin,Role.Clerk)]
         [HttpPost]
         public async Task<ActionResult<Visitor>> PostVisitor(Visitor visitor)
         {
@@ -85,6 +84,7 @@ namespace LibraryMS.Controllers
         }
 
         // DELETE: api/Visitor/5
+        [Authorize(Role.Admin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVisitor(int id)
         {

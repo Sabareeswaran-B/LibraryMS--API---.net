@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using LibraryMS.Entities;
 
 namespace LibraryMS.Model
 {
@@ -6,7 +7,7 @@ namespace LibraryMS.Model
     {
         public Guid EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
-        public string? EmployeeRole { get; set; }
+        public Role EmployeeRole { get; set; }
         public int EmployeeAge { get; set; }
         public int EmployeeSalary { get; set; }
         public string? EmployeeEmail { get; set; }

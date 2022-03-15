@@ -1,16 +1,13 @@
-#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
+using LibraryMS.Helpers.RBA;
+using LibraryMS.Entities;
 
 namespace LibraryMS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
+    [Authorize(Role.Admin)]
     [ApiController]
     public class AuthorController : ControllerBase
     {
@@ -22,6 +19,7 @@ namespace LibraryMS.Controllers
         }
 
         // GET: api/Author
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthor()
         {
@@ -29,6 +27,7 @@ namespace LibraryMS.Controllers
         }
 
         // GET: api/Author/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Author>> GetAuthor(int id)
         {

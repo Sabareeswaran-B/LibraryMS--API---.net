@@ -30,7 +30,7 @@ namespace LibraryMS.Migrations
                 {
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployeeRole = table.Column<int>(type: "int", nullable: false),
                     EmployeeAge = table.Column<int>(type: "int", nullable: false),
                     EmployeeSalary = table.Column<int>(type: "int", nullable: false),
                     EmployeeEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),

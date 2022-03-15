@@ -1,16 +1,13 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
+using LibraryMS.Helpers.RBA;
+using LibraryMS.Entities;
 
 namespace LibraryMS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class BookController : ControllerBase
     {
@@ -44,6 +41,7 @@ namespace LibraryMS.Controllers
 
         // PUT: api/Book/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Role.Admin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBook(Guid id, Book book)
         {
@@ -72,9 +70,31 @@ namespace LibraryMS.Controllers
 
             return NoContent();
         }
+        //Put: AddStock/:id/:CopiesAvailable
+        [Authorize(Role.Admin,Role.Clerk)]
+        [HttpPut("{id}/{CopiesAvailable}")]
+        public async Task<ActionResult<Book>> AddStock(Guid id, [FromRoute]int CopiesAvailable)
+        {
+            Book book = await _context.Book.FindAsync(id);
+            book.CopiesAvailable += CopiesAvailable;
+            await _context.SaveChangesAsync();
+            return Ok(book);
+        }
+
+        //Put: RemoveStock/:id/:CopiesAvailable
+        [Authorize(Role.Admin,Role.Clerk)]
+        [HttpPut("{id}/{CopiesAvailable}")]
+        public async Task<ActionResult<Book>> RemoveStock(Guid id, [FromRoute]int CopiesAvailable)
+        {
+            Book book = _context.Book.Where(data => data.BookId == id).FirstOrDefault();
+            book.CopiesAvailable -= CopiesAvailable;
+            await _context.SaveChangesAsync();
+            return Ok(book);
+        }
 
         // POST: api/Book
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Role.Admin)]
         [HttpPost]
         public async Task<ActionResult<Book>> PostBook(Book book)
         {
@@ -83,7 +103,7 @@ namespace LibraryMS.Controllers
 
             return CreatedAtAction("GetBook", new { id = book.BookId }, book);
         }
-
+        [Authorize(Role.Admin)]
         // DELETE: api/Book/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)

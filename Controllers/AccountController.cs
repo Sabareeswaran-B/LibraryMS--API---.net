@@ -1,3 +1,4 @@
+using LibraryMS.Entities;
 using LibraryMS.Helpers.RBA;
 using LibraryMS.Model;
 using LibraryMS.Services;
@@ -5,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]/[action]")]
 [ApiController]
 public class AccountController : ControllerBase
 {
@@ -31,7 +32,7 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
-    [Authorize]
+    [Authorize(Role.Admin)]
     [HttpGet]
     public IActionResult GetAllUsers()
     {

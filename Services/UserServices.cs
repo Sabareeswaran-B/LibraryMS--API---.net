@@ -52,8 +52,7 @@ public class UserServices : IUserServices
             Subject = new ClaimsIdentity(
                 new[]
                 {
-                    new Claim("Id", employee.EmployeeId.ToString()),
-                    new Claim("Role", employee.EmployeeRole!.ToString())
+                    new Claim("Id", employee.EmployeeId.ToString())
                 }
             ),
             Expires = DateTime.UtcNow.AddDays(2),

@@ -99,8 +99,8 @@ namespace LibraryMS.Migrations
                     b.Property<string>("EmployeePhoneNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeRole")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("EmployeeRole")
+                        .HasColumnType("int");
 
                     b.Property<int>("EmployeeSalary")
                         .HasColumnType("int");
