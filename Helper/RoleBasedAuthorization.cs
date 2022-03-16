@@ -6,8 +6,7 @@ using LibraryMS.Entities;
 namespace LibraryMS.Helpers.RBA;
 
 [AttributeUsage(AttributeTargets.Method)]
-public class AllowAnonymousAttribute : Attribute
-{ }
+public class AllowAnonymousAttribute : Attribute { }
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter

@@ -21,23 +21,23 @@ namespace LibraryMS.Controllers
 
         // GET: api/Lending
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Lending>>> GetLending()
+        public async Task<ActionResult<IEnumerable<Lending>>> GetAllLendings()
         {
             try
             {
-                var employees = await _context.Lending.Where(w => w.Active == "true").ToListAsync();
+                var lendings = await _context.Lending.Where(w => w.Active == "true").ToListAsync();
                 return Ok(
                     new
                     {
-                        status = "Success",
-                        message = "Get all employees successfully",
-                        data = employees
+                        status = "success",
+                        message = "Get all lendings successfully",
+                        data = lendings
                     }
                 );
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine("get all employees exception: {0}", ex);
+                Console.WriteLine("get all lendings exception: {0}", ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -60,7 +60,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get single lendings successfully",
                         data = lendings
                     }
@@ -88,13 +88,13 @@ namespace LibraryMS.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                var updatedEmployee = await _context.Lending.FindAsync(id);
+                var updatedLending = await _context.Lending.FindAsync(id);
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Lending updated successfully",
-                        data = updatedEmployee
+                        data = updatedLending
                     }
                 );
             }
@@ -132,18 +132,21 @@ namespace LibraryMS.Controllers
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine("Update existing Employee exception: {0}", ex);
+                Console.WriteLine("Add new lending exception: {0}", ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
 
         // DELETE: api/Lending/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLending(int id)
+        public async Task<IActionResult> DeleteLending(Guid id)
         {
             try
             {
-                var lending = await _context.Lending.FindAsync(id);
+                var lending = await _context.Lending
+                    .Where(w => w.LendingId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
                 if (lending == null)
                 {
                     return NotFound(new { status = "failed", message = "Lending not found" });
@@ -155,7 +158,7 @@ namespace LibraryMS.Controllers
                 lending.Active = "false";
                 await _context.SaveChangesAsync();
 
-                return Ok(new { status = "Success", message = "Lending deleted successfully" });
+                return Ok(new { status = "success", message = "Lending deleted successfully" });
             }
             catch (System.Exception ex)
             {
@@ -166,7 +169,7 @@ namespace LibraryMS.Controllers
 
         private bool LendingExists(Guid id)
         {
-            return _context.Lending.Any(e => e.LendingId == id);
+            return _context.Lending.Any(e => e.LendingId == id && e.Active == "true");
         }
     }
 }

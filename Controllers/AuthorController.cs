@@ -29,7 +29,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get all authors successfully",
                         data = authors
                     }
@@ -61,7 +61,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get single authors successfully",
                         data = author
                     }
@@ -93,7 +93,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Author updated successfully",
                         data = updatedAuthor
                     }
@@ -139,7 +139,10 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var author = await _context.Author.FindAsync(id);
+                var author = await _context.Author
+                    .Where(w => w.AuthorId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
                 if (author == null)
                 {
                     return NotFound(new { status = "failed", message = "Author not found" });
@@ -148,7 +151,7 @@ namespace LibraryMS.Controllers
                 author.Active = "false";
                 await _context.SaveChangesAsync();
 
-                return Ok(new { status = "Success", message = "Author deleted successfully" });
+                return Ok(new { status = "success", message = "Author deleted successfully" });
             }
             catch (System.Exception ex)
             {
@@ -159,7 +162,7 @@ namespace LibraryMS.Controllers
 
         private bool IsAuthorExists(Guid id)
         {
-            return _context.Author.Any(e => e.AuthorId == id);
+            return _context.Author.Any(e => e.AuthorId == id && e.Active == "true");
         }
     }
 }

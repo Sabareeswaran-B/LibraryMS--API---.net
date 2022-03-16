@@ -26,7 +26,7 @@ namespace LibraryMS.Controllers
             {
                 var books = await _context.Book.Where(w => w.Active == "true").ToListAsync();
                 return Ok(
-                    new { status = "Success", message = "Get all books successfully", data = books }
+                    new { status = "success", message = "Get all books successfully", data = books }
                 );
             }
             catch (System.Exception ex)
@@ -54,7 +54,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get single books successfully",
                         data = book
                     }
@@ -87,7 +87,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Book updated successfully",
                         data = updatedBook
                     }
@@ -121,7 +121,7 @@ namespace LibraryMS.Controllers
                 book.CopiesAvailable += CopiesToAdd;
                 await _context.SaveChangesAsync();
                 return Ok(
-                    new { status = "Success", message = "Added stock successfully", data = book }
+                    new { status = "success", message = "Added stock successfully", data = book }
                 );
             }
             catch (System.Exception ex)
@@ -146,7 +146,7 @@ namespace LibraryMS.Controllers
                 book.CopiesAvailable -= CopiesToRemove;
                 await _context.SaveChangesAsync();
                 return Ok(
-                    new { status = "Success", message = "Removed stock successfully", data = book }
+                    new { status = "success", message = "Removed stock successfully", data = book }
                 );
             }
             catch (System.Exception ex)
@@ -184,7 +184,10 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var book = await _context.Book.FindAsync(id);
+                var book = await _context.Book
+                    .Where(w => w.BookId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
                 if (book == null)
                 {
                     return NotFound(new { status = "failed", message = "Book not found" });
@@ -193,7 +196,7 @@ namespace LibraryMS.Controllers
                 book.Active = "false";
                 await _context.SaveChangesAsync();
 
-                return Ok(new { status = "Success", message = "Book deleted successfully" });
+                return Ok(new { status = "success", message = "Book deleted successfully" });
             }
             catch (System.Exception ex)
             {
@@ -204,7 +207,7 @@ namespace LibraryMS.Controllers
 
         private bool IsBookExists(Guid id)
         {
-            return _context.Book.Any(e => e.BookId == id);
+            return _context.Book.Any(e => e.BookId == id && e.Active == "true");
         }
     }
 }

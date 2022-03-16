@@ -31,7 +31,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get all employees successfully",
                         data = employees
                     }
@@ -62,7 +62,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Get single employees successfully",
                         data = employees
                     }
@@ -96,7 +96,7 @@ namespace LibraryMS.Controllers
                 return Ok(
                     new
                     {
-                        status = "Success",
+                        status = "success",
                         message = "Employee updated successfully",
                         data = updatedEmployee
                     }
@@ -148,7 +148,10 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var employee = await _context.Employee.FindAsync(id);
+                var employee = await _context.Employee
+                    .Where(w => w.EmployeeId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
                 if (employee == null)
                 {
                     return NotFound(new { status = "failed", message = "Employee not found" });
@@ -157,7 +160,7 @@ namespace LibraryMS.Controllers
                 employee.Active = "false";
                 await _context.SaveChangesAsync();
 
-                return Ok(new { status = "Success", message = "Employee deleted successfully" });
+                return Ok(new { status = "success", message = "Employee deleted successfully" });
             }
             catch (System.Exception ex)
             {
@@ -168,7 +171,7 @@ namespace LibraryMS.Controllers
 
         private bool IsEmployeeExists(Guid id)
         {
-            return _context.Employee.Any(e => e.EmployeeId == id);
+            return _context.Employee.Any(e => e.EmployeeId == id && e.Active == "true");
         }
     }
 }
