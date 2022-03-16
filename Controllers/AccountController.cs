@@ -47,7 +47,9 @@ public class AccountController : ControllerBase
         try
         {
             var users = _userServices.GetAll();
-            return Ok(new { status = "success", message = "Get all users Successfull", data = users });
+            return Ok(
+                new { status = "success", message = "Get all users Successfull", data = users }
+            );
         }
         catch (System.Exception ex)
         {

@@ -26,7 +26,14 @@ namespace LibraryMS.Controllers
             try
             {
                 var authors = await _context.Author.Where(w => w.Active == "true").ToListAsync();
-                return Ok(new { status = "Success", message = "Get all authors successfully", data = authors });
+                return Ok(
+                    new
+                    {
+                        status = "Success",
+                        message = "Get all authors successfully",
+                        data = authors
+                    }
+                );
             }
             catch (System.Exception ex)
             {
@@ -52,7 +59,12 @@ namespace LibraryMS.Controllers
                 }
 
                 return Ok(
-                    new { status = "Success", message = "Get single authors successfully", data = author }
+                    new
+                    {
+                        status = "Success",
+                        message = "Get single authors successfully",
+                        data = author
+                    }
                 );
             }
             catch (System.Exception ex)
@@ -71,7 +83,7 @@ namespace LibraryMS.Controllers
             {
                 return BadRequest(new { status = "failed", message = "Given id is not matching" });
             }
-
+            author.Active = "true";
             _context.Entry(author).State = EntityState.Modified;
 
             try

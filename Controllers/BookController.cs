@@ -75,9 +75,9 @@ namespace LibraryMS.Controllers
         {
             if (id != book.BookId)
             {
-                return BadRequest();
+                return BadRequest(new { status = "failed", message = "Given id is not matching" });
             }
-
+            book.Active = "true";
             _context.Entry(book).State = EntityState.Modified;
 
             try
@@ -95,7 +95,7 @@ namespace LibraryMS.Controllers
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!BookExists(id))
+                if (!IsBookExists(id))
                 {
                     return NotFound(new { status = "failed", message = "Book not found" });
                 }
@@ -168,7 +168,7 @@ namespace LibraryMS.Controllers
                 _context.Book.Add(book);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetBook", new { id = book.BookId }, book);
+                return CreatedAtAction("GetBookById", new { id = book.BookId }, book);
             }
             catch (System.Exception ex)
             {
@@ -180,7 +180,7 @@ namespace LibraryMS.Controllers
         [Authorize(Role.Admin)]
         // DELETE: api/Book/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(Guid id)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace LibraryMS.Controllers
             }
         }
 
-        private bool BookExists(Guid id)
+        private bool IsBookExists(Guid id)
         {
             return _context.Book.Any(e => e.BookId == id);
         }
