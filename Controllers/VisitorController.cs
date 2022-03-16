@@ -20,7 +20,7 @@ namespace LibraryMS.Controllers
 
         // GET: api/Visitor
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Visitor>>> GetAllVisitors()
+        public async Task<IActionResult> GetAllVisitors()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace LibraryMS.Controllers
 
         // GET: api/Visitor/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Visitor>> GetVisitorById(Guid id)
+        public async Task<IActionResult> GetVisitorById(Guid id)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace LibraryMS.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Role.Admin, Role.Clerk)]
         [HttpPost]
-        public async Task<ActionResult<Visitor>> AddNewVisitor(Visitor visitor)
+        public async Task<IActionResult> AddNewVisitor(Visitor visitor)
         {
             try
             {

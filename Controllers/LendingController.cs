@@ -21,7 +21,7 @@ namespace LibraryMS.Controllers
 
         // GET: api/Lending
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Lending>>> GetAllLendings()
+        public async Task<IActionResult> GetAllLendings()
         {
             try
             {
@@ -44,7 +44,7 @@ namespace LibraryMS.Controllers
 
         // GET: api/Lending/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Lending>> GetLendingById(Guid id)
+        public async Task<IActionResult> GetLendingById(Guid id)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace LibraryMS.Controllers
         // POST: api/Lending
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Lending>> AddNewLending(Lending lending)
+        public async Task<IActionResult> AddNewLending(Lending lending)
         {
             try
             {

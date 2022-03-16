@@ -119,7 +119,7 @@ namespace LibraryMS.Controllers
         // POST: api/Employee
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> AddNewEmployee(Employee employee)
+        public async Task<IActionResult> AddNewEmployee(Employee employee)
         {
             try
             {
