@@ -7,7 +7,7 @@ using LibraryMS.Entities;
 
 namespace LibraryMS.Controllers
 {
-    [Authorize(Role.Admin,Role.Clerk)]
+    [Authorize(Role.Admin, Role.Clerk)]
     [Route("[controller]/[action]")]
     [ApiController]
     public class LendingController : ControllerBase
@@ -23,81 +23,145 @@ namespace LibraryMS.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Lending>>> GetLending()
         {
-            return await _context.Lending.ToListAsync();
+            try
+            {
+                var employees = await _context.Lending.Where(w => w.Active == "true").ToListAsync();
+                return Ok(
+                    new
+                    {
+                        status = "Success",
+                        message = "Get all employees successfully",
+                        data = employees
+                    }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("get all employees exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // GET: api/Lending/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Lending>> GetLending(int id)
+        public async Task<ActionResult<Lending>> GetLendingById(Guid id)
         {
-            var lending = await _context.Lending.FindAsync(id);
-
-            if (lending == null)
+            try
             {
-                return NotFound();
-            }
+                var lendings = await _context.Lending
+                    .Where(w => w.LendingId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
+                if (lendings == null)
+                {
+                    return NotFound(new { status = "failed", message = "Lendings not found!" });
+                }
 
-            return lending;
+                return Ok(
+                    new
+                    {
+                        status = "Success",
+                        message = "Get single lendings successfully",
+                        data = lendings
+                    }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("get lendings by id exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // PUT: api/Lending/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLending(Guid id, Lending lending)
+        public async Task<IActionResult> UpdateExistingLending(Guid id, Lending lending)
         {
             if (id != lending.LendingId)
             {
-                return BadRequest();
+                return BadRequest(new { status = "failed", message = "Given id is not matching" });
             }
-
+            lending.Active = "true";
             _context.Entry(lending).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+                var updatedEmployee = await _context.Lending.FindAsync(id);
+                return Ok(
+                    new
+                    {
+                        status = "Success",
+                        message = "Lending updated successfully",
+                        data = updatedEmployee
+                    }
+                );
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!LendingExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "Lending not found" });
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine("Update existing lending exception: {0}", ex);
+                    return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Lending
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Lending>> PostLending(Lending lending)
+        public async Task<ActionResult<Lending>> AddNewLending(Lending lending)
         {
-            _context.Lending.Add(lending);
-            Book book = _context.Book.Where(data => data.BookId == lending.BookId).FirstOrDefault();
-            book.CopiesAvailable -= 1;
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Lending.Add(lending);
 
-            return CreatedAtAction("GetLending", new { id = lending.LendingId }, lending);
+                Book book = _context.Book
+                    .Where(data => data.BookId == lending.BookId)
+                    .FirstOrDefault();
+                book.CopiesAvailable -= 1;
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetLendingById", new { id = lending.LendingId }, lending);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Update existing Employee exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // DELETE: api/Lending/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLending(int id)
         {
-            var lending = await _context.Lending.FindAsync(id);
-            if (lending == null)
+            try
             {
-                return NotFound();
+                var lending = await _context.Lending.FindAsync(id);
+                if (lending == null)
+                {
+                    return NotFound(new { status = "failed", message = "Lending not found" });
+                }
+                Book book = _context.Book
+                    .Where(data => data.BookId == lending.BookId)
+                    .FirstOrDefault();
+                book.CopiesAvailable += 1;
+                lending.Active = "false";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { status = "Success", message = "Lending deleted successfully" });
             }
-            Book book = _context.Book.Where(data => data.BookId == lending.BookId).FirstOrDefault();
-            book.CopiesAvailable += 1;
-            _context.Lending.Remove(lending);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Delete Lending exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         private bool LendingExists(Guid id)

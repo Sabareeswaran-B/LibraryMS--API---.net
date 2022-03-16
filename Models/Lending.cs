@@ -12,7 +12,7 @@ namespace LibraryMS.Model
         public int Lendinglimit { get; set; }
 
         [JsonIgnore]
-        public int Active { get; set; }
+        public string? Active { get; set; }
 
         public virtual Visitor? Visitor { get; set; }
         public virtual Book? Book { get; set; }

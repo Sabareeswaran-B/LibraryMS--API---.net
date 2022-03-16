@@ -122,7 +122,7 @@ namespace LibraryMS.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Active")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");

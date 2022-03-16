@@ -96,7 +96,7 @@ namespace LibraryMS.Migrations
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LendedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Lendinglimit = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<int>(type: "int", nullable: false)
+                    Active = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
