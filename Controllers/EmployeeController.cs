@@ -132,7 +132,12 @@ namespace LibraryMS.Controllers
                 return CreatedAtAction(
                     "GetEmployeebyId",
                     new { id = employee.EmployeeId },
-                    employee
+                    new
+                    {
+                        status = "success",
+                        message = "Created employee successfully",
+                        data = employee
+                    }
                 );
             }
             catch (System.Exception ex)

@@ -128,7 +128,16 @@ namespace LibraryMS.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetLendingById", new { id = lending.LendingId }, lending);
+                return CreatedAtAction(
+                    "GetLendingById",
+                    new { id = lending.LendingId },
+                    new
+                    {
+                        status = "success",
+                        message = "Created lending successfully",
+                        data = lending
+                    }
+                );
             }
             catch (System.Exception ex)
             {

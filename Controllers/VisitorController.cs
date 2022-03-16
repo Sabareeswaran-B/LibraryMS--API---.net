@@ -124,7 +124,16 @@ namespace LibraryMS.Controllers
                 _context.Visitor.Add(visitor);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetVisitorById", new { id = visitor.VisitorId }, visitor);
+                return CreatedAtAction(
+                    "GetVisitorById",
+                    new { id = visitor.VisitorId },
+                    new
+                    {
+                        status = "success",
+                        message = "Created visitor successfully",
+                        data = visitor
+                    }
+                );
             }
             catch (System.Exception ex)
             {

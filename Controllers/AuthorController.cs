@@ -124,7 +124,16 @@ namespace LibraryMS.Controllers
                 _context.Author.Add(author);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetAuthorById", new { id = author.AuthorId }, author);
+                return CreatedAtAction(
+                    "GetAuthorById",
+                    new { id = author.AuthorId },
+                    new
+                    {
+                        status = "success",
+                        message = "Created author successfully",
+                        data = author
+                    }
+                );
             }
             catch (System.Exception ex)
             {

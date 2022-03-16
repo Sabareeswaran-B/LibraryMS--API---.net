@@ -168,7 +168,16 @@ namespace LibraryMS.Controllers
                 _context.Book.Add(book);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetBookById", new { id = book.BookId }, book);
+                return CreatedAtAction(
+                    "GetBookById",
+                    new { id = book.BookId },
+                    new
+                    {
+                        status = "success",
+                        message = "Created book successfully",
+                        data = book
+                    }
+                );
             }
             catch (System.Exception ex)
             {
