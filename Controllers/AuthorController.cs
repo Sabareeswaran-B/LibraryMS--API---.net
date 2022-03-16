@@ -21,34 +21,55 @@ namespace LibraryMS.Controllers
         // GET: api/Author
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthor()
+        public async Task<IActionResult> GetAllAuthors()
         {
-            return await _context.Author.ToListAsync();
+            try
+            {
+                var authors = await _context.Author.Where(w => w.Active == "true").ToListAsync();
+                return Ok(new { status = "Success", message = "Get all authors successfully", data = authors });
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("get all authors exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // GET: api/Author/5
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthor(int id)
+        public async Task<IActionResult> GetAuthorById(Guid id)
         {
-            var author = await _context.Author.FindAsync(id);
-
-            if (author == null)
+            try
             {
-                return NotFound();
-            }
+                var author = await _context.Author
+                    .Where(w => w.AuthorId == id)
+                    .Where(w => w.Active == "true")
+                    .FirstAsync();
+                if (author == null)
+                {
+                    return NotFound(new { status = "failed", message = "Author not found!" });
+                }
 
-            return author;
+                return Ok(
+                    new { status = "Success", message = "Get single authors successfully", data = author }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Get Author By Id exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // PUT: api/Author/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(Guid id, Author author)
+        public async Task<IActionResult> UpdateExistingAuthor(Guid id, Author author)
         {
             if (id != author.AuthorId)
             {
-                return BadRequest();
+                return BadRequest(new { status = "failed", message = "Given id is not matching" });
             }
 
             _context.Entry(author).State = EntityState.Modified;
@@ -56,50 +77,75 @@ namespace LibraryMS.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                var updatedAuthor = await _context.Author.FindAsync(id);
+                return Ok(
+                    new
+                    {
+                        status = "Success",
+                        message = "Author updated successfully",
+                        data = updatedAuthor
+                    }
+                );
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!AuthorExists(id))
+                if (!IsAuthorExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "Author not found" });
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine("Update existing Author exception: {0}", ex);
+                    return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Author
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<Author>> AddNewAuthor(Author author)
         {
-            _context.Author.Add(author);
-            await _context.SaveChangesAsync();
+            try
+            {
+                author.Active = "true";
+                _context.Author.Add(author);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAuthor", new { id = author.AuthorId }, author);
+                return CreatedAtAction("GetAuthorById", new { id = author.AuthorId }, author);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Add new Author exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
         // DELETE: api/Author/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        public async Task<IActionResult> DeleteAuthor(Guid id)
         {
-            var author = await _context.Author.FindAsync(id);
-            if (author == null)
+            try
             {
-                return NotFound();
+                var author = await _context.Author.FindAsync(id);
+                if (author == null)
+                {
+                    return NotFound(new { status = "failed", message = "Author not found" });
+                }
+
+                author.Active = "false";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { status = "Success", message = "Author deleted successfully" });
             }
-
-            _context.Author.Remove(author);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Delete Author exception: {0}", ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
         }
 
-        private bool AuthorExists(Guid id)
+        private bool IsAuthorExists(Guid id)
         {
             return _context.Author.Any(e => e.AuthorId == id);
         }
