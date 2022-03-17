@@ -37,6 +37,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get all visitors exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -68,6 +69,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get visitor by id exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -98,7 +100,7 @@ namespace LibraryMS.Controllers
                     }
                 );
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!IsVisitorExists(id))
                 {
@@ -107,6 +109,7 @@ namespace LibraryMS.Controllers
                 else
                 {
                     Console.WriteLine("Update existing visitor exception: {0}", ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
@@ -138,6 +141,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Add new visitor exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -166,6 +170,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Delete Visitor exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }

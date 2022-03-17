@@ -38,6 +38,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get all authors exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -70,6 +71,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Get Author By Id exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -99,7 +101,7 @@ namespace LibraryMS.Controllers
                     }
                 );
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!IsAuthorExists(id))
                 {
@@ -108,6 +110,7 @@ namespace LibraryMS.Controllers
                 else
                 {
                     Console.WriteLine("Update existing Author exception: {0}", ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
@@ -138,6 +141,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Add new Author exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -165,6 +169,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Delete Author exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }

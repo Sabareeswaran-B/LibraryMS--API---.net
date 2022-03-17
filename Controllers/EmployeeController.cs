@@ -40,6 +40,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get all employees exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -71,6 +72,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get employees by id exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -102,7 +104,7 @@ namespace LibraryMS.Controllers
                     }
                 );
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!IsEmployeeExists(id))
                 {
@@ -111,6 +113,7 @@ namespace LibraryMS.Controllers
                 else
                 {
                     Console.WriteLine("Update existing Employee exception: {0}", ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
@@ -143,6 +146,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Update existing Employee exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -170,6 +174,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Delete Employee exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }

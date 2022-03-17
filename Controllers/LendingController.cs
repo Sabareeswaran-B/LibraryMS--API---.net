@@ -25,7 +25,13 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var lendings = await _context.Lending.Where(w => w.Active == "true").ToListAsync();
+                var lendings = await _context.Lending
+                    .Where(w => w.Active == "true")
+                    .Include(i => i.Visitor)
+                    .Include(i => i.Book)
+                    .Include(i => i.Book.Author)
+                    .Include(i => i.Employee)
+                    .ToListAsync();
                 return Ok(
                     new
                     {
@@ -38,6 +44,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get all lendings exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -51,6 +58,10 @@ namespace LibraryMS.Controllers
                 var lendings = await _context.Lending
                     .Where(w => w.LendingId == id)
                     .Where(w => w.Active == "true")
+                    .Include(i => i.Visitor)
+                    .Include(i => i.Book)
+                    .Include(i => i.Book.Author)
+                    .Include(i => i.Employee)
                     .FirstAsync();
                 if (lendings == null)
                 {
@@ -69,6 +80,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("get lendings by id exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -78,15 +90,16 @@ namespace LibraryMS.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateExistingLending(Guid id, Lending lending)
         {
-            if (id != lending.LendingId)
-            {
-                return BadRequest(new { status = "failed", message = "Given id is not matching" });
-            }
-            lending.Active = "true";
-            _context.Entry(lending).State = EntityState.Modified;
-
             try
             {
+                if (id != lending.LendingId)
+                {
+                    return BadRequest(
+                        new { status = "failed", message = "Given id is not matching" }
+                    );
+                }
+                lending.Active = "true";
+                _context.Entry(lending).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 var updatedLending = await _context.Lending.FindAsync(id);
                 return Ok(
@@ -98,7 +111,7 @@ namespace LibraryMS.Controllers
                     }
                 );
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!LendingExists(id))
                 {
@@ -107,6 +120,7 @@ namespace LibraryMS.Controllers
                 else
                 {
                     Console.WriteLine("Update existing lending exception: {0}", ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", message = ex.Message });
                 }
             }
@@ -119,6 +133,8 @@ namespace LibraryMS.Controllers
         {
             try
             {
+                lending.LendedOn = DateTime.Now;
+                lending.Active = "true";
                 _context.Lending.Add(lending);
 
                 Book book = _context.Book
@@ -142,6 +158,7 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Add new lending exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
@@ -172,13 +189,14 @@ namespace LibraryMS.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine("Delete Lending exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
         }
 
         private bool LendingExists(Guid id)
         {
-            return _context.Lending.Any(e => e.LendingId == id && e.Active == "true");
+            return _context.Lending.Any(e => e.LendingId == id);
         }
     }
 }

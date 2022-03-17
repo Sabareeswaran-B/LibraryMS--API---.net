@@ -36,6 +36,7 @@ public class AccountController : ControllerBase
         catch (System.Exception ex)
         {
             Console.WriteLine("login exception: {0}", ex);
+            Sentry.SentrySdk.CaptureException(ex);
             return BadRequest(new { status = "failed", message = ex.Message });
         }
     }
@@ -54,6 +55,7 @@ public class AccountController : ControllerBase
         catch (System.Exception ex)
         {
             Console.WriteLine("get all users exception: {0}", ex);
+            Sentry.SentrySdk.CaptureException(ex);
             return BadRequest(new { status = "failed", message = ex.Message });
         }
     }

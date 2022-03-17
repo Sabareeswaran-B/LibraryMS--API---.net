@@ -12,8 +12,6 @@ namespace LibraryMS.Model
         public int EmployeeSalary { get; set; }
         public string? EmployeeEmail { get; set; }
         public string? EmployeePhoneNo { get; set; }
-
-        // [JsonIgnore]
         public string? Password { get; set; }
 
         [JsonIgnore]
