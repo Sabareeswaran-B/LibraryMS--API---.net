@@ -24,7 +24,7 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var books = await _context.Book.Where(w => w.Active == "true").ToListAsync();
+                var books = await _context.Book.Where(w => w.Active == "true").Include(i => i.Author).ToListAsync();
                 return Ok(
                     new { status = "success", message = "Get all books successfully", data = books }
                 );
@@ -117,7 +117,9 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                Book book = await _context.Book.FindAsync(id);
+                Book book = await _context.Book
+                    .Where(w => w.Active == "true" && w.AuthorId == id)
+                    .FirstOrDefaultAsync();
                 if (book == null)
                     return NotFound(new { status = "failed", message = "Book not found" });
 
@@ -142,12 +144,22 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                Book book = _context.Book.Where(data => data.BookId == id).FirstOrDefault();
+                Book book = await _context.Book
+                    .Where(data => data.BookId == id && data.Active == "true")
+                    .FirstOrDefaultAsync();
 
                 if (book == null)
                     return NotFound(new { status = "failed", message = "Book not found" });
 
-                book.CopiesAvailable -= CopiesToRemove;
+                if (book.CopiesAvailable > CopiesToRemove)
+                {
+                    book.CopiesAvailable -= CopiesToRemove;
+                }
+                else
+                {
+                    book.Active = "false";
+                }
+
                 await _context.SaveChangesAsync();
                 return Ok(
                     new { status = "success", message = "Removed stock successfully", data = book }
@@ -176,12 +188,7 @@ namespace LibraryMS.Controllers
                 return CreatedAtAction(
                     "GetBookById",
                     new { id = book.BookId },
-                    new
-                    {
-                        status = "success",
-                        message = "Created book successfully",
-                        data = book
-                    }
+                    new { status = "success", message = "Created book successfully", data = book }
                 );
             }
             catch (System.Exception ex)

@@ -21,7 +21,32 @@ namespace LibraryMS.Controllers
 
         // GET: api/Employee
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployee()
+        public async Task<IActionResult> GetAllEmployees()
+        {
+            try
+            {
+                var employees = await _context.Employee
+                    .Where(w => w.Active == "true")
+                    .ToListAsync();
+                return Ok(
+                    new
+                    {
+                        status = "success",
+                        message = "Get all employees successfully",
+                        data = employees
+                    }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("get all employees exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmployees()
         {
             try
             {
@@ -129,6 +154,7 @@ namespace LibraryMS.Controllers
                 var hashPassword = BCrypt.Net.BCrypt.HashPassword(employee.Password);
                 employee.Password = hashPassword;
                 employee.Active = "true";
+                employee.EmployeeRole = Role.Clerk;
                 _context.Employee.Add(employee);
                 await _context.SaveChangesAsync();
 
@@ -145,7 +171,7 @@ namespace LibraryMS.Controllers
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine("Update existing Employee exception: {0}", ex);
+                Console.WriteLine("Add new Employee exception: {0}", ex);
                 Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", message = ex.Message });
             }
