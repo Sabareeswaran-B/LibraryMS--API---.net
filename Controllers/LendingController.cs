@@ -36,7 +36,7 @@ namespace LibraryMS.Controllers
                     new
                     {
                         status = "success",
-                        message = "Get all lendings successfully",
+                        message = "Get all lending successfull",
                         data = lendings
                     }
                 );

@@ -1,5 +1,5 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
 namespace LibraryMS.Model
 {
     public class Book
@@ -14,7 +14,6 @@ namespace LibraryMS.Model
 
         [JsonIgnore]
         public string? Active { get; set; }
-
         public virtual Author? Author { get; set; }
     }
 }

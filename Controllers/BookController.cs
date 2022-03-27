@@ -24,7 +24,10 @@ namespace LibraryMS.Controllers
         {
             try
             {
-                var books = await _context.Book.Where(w => w.Active == "true").Include(i => i.Author).ToListAsync();
+                var books = await _context.Book
+                    .Where(w => w.Active == "true")
+                    .Include(i => i.Author)
+                    .ToListAsync();
                 return Ok(
                     new { status = "success", message = "Get all books successfully", data = books }
                 );
