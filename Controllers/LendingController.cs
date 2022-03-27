@@ -85,6 +85,46 @@ namespace LibraryMS.Controllers
             }
         }
 
+        // GET: api/Lending/
+        [HttpGet()]
+        public async Task<IActionResult> GetOverDueLendings()
+        {
+            try
+            {
+                var lendings = await _context.Lending
+                    .Where(w => w.Active == "true")
+                    .Include(i => i.Visitor)
+                    .Include(i => i.Book)
+                    .Include(i => i.Book.Author)
+                    .Include(i => i.Employee)
+                    .ToListAsync();
+
+                var overDueLendings = lendings.Where(
+                    w => w.Lendinglimit < (DateTime.Now - (DateTime)w.LendedOn).Days
+                );
+
+                if (lendings == null)
+                {
+                    return NotFound(new { status = "failed", message = "Lendings not found!" });
+                }
+
+                return Ok(
+                    new
+                    {
+                        status = "success",
+                        message = "Get over dued lendings successfully",
+                        data = overDueLendings
+                    }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("Get over dued lendings exception: {0}", ex);
+                Sentry.SentrySdk.CaptureException(ex);
+                return BadRequest(new { status = "failed", message = ex.Message });
+            }
+        }
+
         // PUT: api/Lending/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
