@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
 using LibraryMS.Helpers.RBA;
 using LibraryMS.Entities;
+using LibraryMS.Services;
 
 namespace LibraryMS.Controllers
 {
@@ -13,10 +14,12 @@ namespace LibraryMS.Controllers
     public class LendingController : ControllerBase
     {
         private readonly LMSContext _context;
+        private readonly IMailService _mailService;
 
-        public LendingController(LMSContext context)
+        public LendingController(LMSContext context, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         // GET: api/Lending
@@ -183,6 +186,15 @@ namespace LibraryMS.Controllers
                 book.CopiesAvailable -= 1;
 
                 await _context.SaveChangesAsync();
+
+                Visitor visitor = await _context.Visitor.Where(v => v.VisitorId == lending.VisitorId).FirstOrDefaultAsync();
+
+                var mail = new MailRequest();
+                mail.ToEmail = visitor.VisitorEmail;
+                mail.Subject = "Thank you for renting our book";
+                mail.Body =
+                    $"<h3>Hello {visitor.VisitorName},</h3><p>Today you have rented {book.BookName}. We are happy to see that we are helpfull to you. You have a limit of {lending.Lendinglimit} to return the book.</p><br><p>Happy reading!<p>";
+                await _mailService.SendEmailAsync(mail);
 
                 return CreatedAtAction(
                     "GetLendingById",

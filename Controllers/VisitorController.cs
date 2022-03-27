@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryMS.Model;
+using LibraryMS.Services;
 using LibraryMS.Helpers.RBA;
 using LibraryMS.Entities;
 
@@ -12,10 +13,13 @@ namespace LibraryMS.Controllers
     public class VisitorController : ControllerBase
     {
         private readonly LMSContext _context;
+        
+        private readonly IMailService _mailService;
 
-        public VisitorController(LMSContext context)
+        public VisitorController(LMSContext context, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         // GET: api/Visitor
@@ -126,6 +130,12 @@ namespace LibraryMS.Controllers
                 visitor.Active = "true";
                 _context.Visitor.Add(visitor);
                 await _context.SaveChangesAsync();
+                var mail = new MailRequest();
+                mail.ToEmail = visitor.VisitorEmail;
+                mail.Subject = "Welcome to our Library";
+                mail.Body =
+                    $"<h3>Hello {visitor.VisitorName},</h3><p>Welcome to our library. We wish you will get the knowledge you seek.</p><br><p>Happy reading!</p>";
+                await _mailService.SendEmailAsync(mail);
 
                 return CreatedAtAction(
                     "GetVisitorById",

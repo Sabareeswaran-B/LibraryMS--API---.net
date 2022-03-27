@@ -1,5 +1,6 @@
 using LibraryMS.Helpers;
 using LibraryMS.Services;
+using LibraryMS.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<LMSContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("LMSContext"))
 );
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IMailService, MailService>();
 
 Host.CreateDefaultBuilder(args)
     .ConfigureWebHostDefaults(
@@ -19,10 +23,7 @@ Host.CreateDefaultBuilder(args)
                 {
                     o.Dsn =
                         "https://912a38e0cdc446da9b779f3f6127857a@o1169931.ingest.sentry.io/6263166";
-                    // When configuring for the first time, to see what the SDK is doing:
                     o.Debug = true;
-                    // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-                    // We recommend adjusting this value in production.
                     o.TracesSampleRate = 1.0;
                 }
             );
